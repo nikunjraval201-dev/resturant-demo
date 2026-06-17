@@ -12,6 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/categories", require("./config/routes/category"));
 app.use("/api/menu", require("./config/routes/menu"));
 app.use("/api/admin", require("./config/routes/adminRoutes"));
+app.use("/api", require("./routes/uploadRoutes"));
+
 // Test Route
 app.get("/", (req, res) => {
   res.json({

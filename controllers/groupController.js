@@ -9,16 +9,20 @@ exports.getGroupMenu = async (req, res) => {
     const result = {};
 
     categories.forEach((category) => {
-      result[category.name.toLowerCase()] = menuItems
-        .filter(
-          (item) => item.categoryId.toString() === category._id.toString(),
-        )
-        .map((item) => ({
-          id: item._id,
-          name: item.name,
-          price: item.price,
-          desc: item.description,
-        }));
+      result[category.name.toLowerCase()] = {
+        categoryId: category._id,
+        items: menuItems
+          .filter(
+            (item) => item.categoryId.toString() === category._id.toString(),
+          )
+          .map((item) => ({
+            id: item._id,
+            name: item.name,
+            price: item.price,
+            description: item.description,
+            image: item.image,
+          })),
+      };
     });
 
     res.status(200).json({

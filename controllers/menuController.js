@@ -72,10 +72,13 @@ exports.getMenuItemById = async (req, res) => {
 
 // Update Menu Item
 exports.updateMenuItem = async (req, res) => {
+  console.log("current request body", req.body);
+
   try {
     const menuItem = await MenuItem.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    console.log("updated menu item", menuItem);
 
     res.status(200).json({
       success: true,

@@ -5,6 +5,9 @@ exports.createCategory = async (req, res) => {
   try {
     const category = await Category.create(req.body);
 
+    const io = req.app.get("io");
+    if (io) io.emit("category-created", category);
+
     res.status(201).json({
       success: true,
       data: category,
@@ -58,6 +61,16 @@ exports.updateCategory = async (req, res) => {
       new: true,
     });
 
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const io = req.app.get("io");
+    if (io) io.emit("category-updated", category);
+
     res.status(200).json({
       success: true,
       data: category,
@@ -73,7 +86,19 @@ exports.updateCategory = async (req, res) => {
 // Delete Category
 exports.deleteCategory = async (req, res) => {
   try {
-    await Category.findByIdAndDelete(req.params.id);
+    const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+
+    if (!deletedCategory) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("category-deleted", { id: req.params.id });
+    }
 
     res.status(200).json({
       success: true,

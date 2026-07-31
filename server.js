@@ -7,6 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  req.io = req.app.get("io");   // dynamically request time પર read કરે
+  next();
+});
 
 // Routes
 app.use("/api/categories", require("./config/routes/category"));

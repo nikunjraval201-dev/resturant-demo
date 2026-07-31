@@ -5,6 +5,10 @@ exports.createMenuItem = async (req, res) => {
   try {
     const menuItem = await MenuItem.create(req.body);
 
+     const io = req.app.get("io");
+    if (io) io.emit("menu-created", menuItem);
+
+
     res.status(201).json({
       success: true,
       data: menuItem,
@@ -71,19 +75,24 @@ exports.getMenuItemById = async (req, res) => {
 };
 
 // Update Menu Item
+// Update Menu Item
 exports.updateMenuItem = async (req, res) => {
   console.log("current request body", req.body);
 
   try {
-    const menuItem = await MenuItem.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    console.log("updated menu item", menuItem);
+    const menuItem = await MenuItem.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
 
+    const io = req.app.get("io");   // ← req.io ને બદલે આ વાપરો
+    if (io) io.emit("menu-updated", menuItem);
     res.status(200).json({
       success: true,
       data: menuItem,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -95,8 +104,12 @@ exports.updateMenuItem = async (req, res) => {
 // Delete Menu Item
 exports.deleteMenuItem = async (req, res) => {
   try {
-    await MenuItem.findByIdAndDelete(req.params.id);
+const deletedMenu = await MenuItem.findByIdAndDelete(req.params.id);
 
+  const io = req.app.get("io");
+    if (io) {
+      io.emit("menu-deleted", { id: deletedMenu._id });
+    }
     res.status(200).json({
       success: true,
       message: "Menu item deleted successfully",

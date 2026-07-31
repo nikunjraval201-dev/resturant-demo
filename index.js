@@ -17,7 +17,7 @@ const server = http.createServer(app);
 // Socket.io
 const io = new Server(server, {
     cors: {
-        origin: "*", // Production માં frontend URL આપવી
+        origin: "https://resturant-demo.onrender.com", // Production માં frontend URL આપવી
         methods: ["GET", "POST", "PUT", "DELETE"]
     }
 });

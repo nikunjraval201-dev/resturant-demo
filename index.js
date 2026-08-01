@@ -8,39 +8,34 @@ const { Server } = require("socket.io");
 
 const PORT = process.env.PORT || 5000;
 
-// Connect Database
 connectDB();
 
-// Create HTTP Server
 const server = http.createServer(app);
 
-// Socket.io
 const io = new Server(server, {
-    cors: {
-        origin: "*", // Production માં frontend URL આપવી
-        methods: ["GET", "POST", "PUT", "DELETE"]
-    }
+  cors: {
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  }
 });
 
 console.log("✅ Socket.IO Server Started");
 
-// Save io in Express app
 app.set("io", io);
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
 
-// Connection
 io.on("connection", (socket) => {
-    console.log("✅ Client Connected:", socket.id);
+  console.log("✅ Client Connected:", socket.id);
 
-    socket.on("disconnect", () => {
-        console.log("❌ Client Disconnected:", socket.id);
-    });
+  socket.on("disconnect", () => {
+    console.log("❌ Client Disconnected:", socket.id);
+  });
 });
 
-// Start Server
 server.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

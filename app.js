@@ -2,15 +2,18 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
+const connectDB = require("./config/db");
 
 const app = express();
 
-app.use(cors());
+connectDB();
+
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:5174"],
+  credentials: true
+}));
 app.use(express.json());
-app.use((req, res, next) => {
-  req.io = req.app.get("io");   // dynamically request time પર read કરે
-  next();
-});
 
 app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/menuItems", require("./routes/menuRoutes"));
@@ -18,11 +21,4 @@ app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/menu", require("./routes/groupRoutes"));
 app.use("/api", require("./routes/uploadRoutes"));
 
-app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "Restaurant API Running",
-  });
-});
-
-module.exports = app;
+module.exports = app;   // ✅ Bas app export karo — server/socket.io atlyaan na banavo

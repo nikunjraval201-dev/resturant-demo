@@ -14,7 +14,13 @@ app.get("/", (req, res) => {
 });
 
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174","https://gloriousdays.netlify.app/"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "https://adminsouthdelight.netlify.app/",
+    "https://gloriousdays.netlify.app/"
+  ],
   credentials: true
 }));
 app.use(express.json());
